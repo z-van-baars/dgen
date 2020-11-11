@@ -15,14 +15,16 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Dcraft"
+config/name="Dgen"
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
 [display]
 
-window/size/test_width=1024
-window/size/test_height=768
+window/size/width=1440
+window/size/height=1024
+window/size/test_width=1440
+window/size/test_height=1024
 
 [rendering]
 

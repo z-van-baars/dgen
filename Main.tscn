@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Scripts/MainMenu.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://assets/tiles/locked_door.png" type="Texture" id=7]
 [ext_resource path="res://assets/tiles/key.png" type="Texture" id=8]
 [ext_resource path="res://assets/tiles/air.png" type="Texture" id=9]
+[ext_resource path="res://Scripts/ControlPanel.gd" type="Script" id=10]
+[ext_resource path="res://assets/tiles/border.png" type="Texture" id=11]
 
 [sub_resource type="TileSet" id=1]
 0/name = "air.png 0"
@@ -109,13 +111,55 @@
 6/shape_one_way_margin = 0.0
 6/shapes = [  ]
 6/z_index = 0
+7/name = "border.png 7"
+7/texture = ExtResource( 11 )
+7/tex_offset = Vector2( 0, 0 )
+7/modulate = Color( 1, 1, 1, 1 )
+7/region = Rect2( 0, 0, 12, 12 )
+7/tile_mode = 0
+7/occluder_offset = Vector2( 0, 0 )
+7/navigation_offset = Vector2( 0, 0 )
+7/shape_offset = Vector2( 0, 0 )
+7/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+7/shape_one_way = false
+7/shape_one_way_margin = 0.0
+7/shapes = [  ]
+7/z_index = 0
+8/name = "border.png 8"
+8/texture = ExtResource( 11 )
+8/tex_offset = Vector2( 0, 0 )
+8/modulate = Color( 1, 1, 1, 1 )
+8/region = Rect2( 12, -12, 12, 12 )
+8/tile_mode = 0
+8/occluder_offset = Vector2( 0, 0 )
+8/navigation_offset = Vector2( 0, 0 )
+8/shape_offset = Vector2( 0, 0 )
+8/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+8/shape_one_way = false
+8/shape_one_way_margin = 0.0
+8/shapes = [  ]
+8/z_index = 0
+9/name = "border.png 9"
+9/texture = ExtResource( 11 )
+9/tex_offset = Vector2( 0, 0 )
+9/modulate = Color( 1, 1, 1, 1 )
+9/region = Rect2( 0, 0, 12, 12 )
+9/tile_mode = 0
+9/occluder_offset = Vector2( 0, 0 )
+9/navigation_offset = Vector2( 0, 0 )
+9/shape_offset = Vector2( 0, 0 )
+9/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+9/shape_one_way = false
+9/shape_one_way_margin = 0.0
+9/shapes = [  ]
+9/z_index = 0
 
 [node name="Main" type="Node"]
 script = ExtResource( 2 )
 
 [node name="Background" type="ColorRect" parent="."]
-margin_right = 1024.0
-margin_bottom = 768.0
+margin_right = 1440.0
+margin_bottom = 1024.0
 color = Color( 0.223529, 0.25098, 0.392157, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -124,6 +168,7 @@ __meta__ = {
 [node name="Dungeon" type="Node2D" parent="."]
 
 [node name="TileMap" type="TileMap" parent="Dungeon"]
+position = Vector2( 26, 66 )
 tile_set = SubResource( 1 )
 cell_size = Vector2( 12, 12 )
 format = 1
@@ -152,74 +197,165 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ControlPanel" type="Control" parent="UILayer"]
+margin_right = 1440.0
+margin_bottom = 40.0
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="UILayer/ControlPanel"]
+margin_right = 1440.0
+margin_bottom = 40.0
+color = Color( 0.168627, 0.176471, 0.282353, 1 )
+
+[node name="RegenButton" type="Button" parent="UILayer/ControlPanel"]
+margin_left = 10.0
+margin_top = 8.0
+margin_right = 87.0
+margin_bottom = 28.0
+text = "Regen"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FailuresLabel" type="Label" parent="UILayer/ControlPanel"]
+margin_left = 128.276
+margin_top = 13.0
+margin_right = 301.276
+margin_bottom = 71.0
+text = "Failures:"
+
+[node name="LargeLabel" type="Label" parent="UILayer/ControlPanel"]
+margin_left = 210.607
+margin_top = 13.0
+margin_right = 383.607
+margin_bottom = 71.0
+text = "Large: "
+
+[node name="nLargeLabel" type="Label" parent="UILayer/ControlPanel"]
+margin_left = 256.182
+margin_top = 13.0
+margin_right = 429.182
+margin_bottom = 71.0
+text = "0"
+
+[node name="MediumLabel" type="Label" parent="UILayer/ControlPanel"]
+margin_left = 318.511
+margin_top = 13.0
+margin_right = 491.511
+margin_bottom = 71.0
+text = "Medium:"
+
+[node name="nMediumLabel" type="Label" parent="UILayer/ControlPanel"]
+margin_left = 377.087
+margin_top = 13.0
+margin_right = 550.087
+margin_bottom = 71.0
+text = "0"
+
+[node name="SmallLabel" type="Label" parent="UILayer/ControlPanel"]
+margin_left = 420.276
+margin_top = 13.0
+margin_right = 593.276
+margin_bottom = 71.0
+text = "Small: "
+
+[node name="nSmallLabel" type="Label" parent="UILayer/ControlPanel"]
+margin_left = 465.852
+margin_top = 13.0
+margin_right = 638.852
+margin_bottom = 71.0
+text = "0"
+
 [node name="MainMenu" type="Control" parent="UILayer"]
 pause_mode = 2
-margin_right = 1024.0
-margin_bottom = 768.0
+margin_right = 1440.0
+margin_bottom = 1024.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Background" type="ColorRect" parent="UILayer/MainMenu"]
-margin_right = 1024.0
-margin_bottom = 768.0
+margin_right = 1440.0
+margin_bottom = 1024.0
 color = Color( 0.341176, 0.380392, 0.592157, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ReadyButton" type="Button" parent="UILayer/MainMenu"]
-margin_left = 483.0
-margin_top = 488.0
-margin_right = 570.0
-margin_bottom = 508.0
-text = "Ready"
+[node name="Message" type="Label" parent="UILayer/MainMenu"]
+modulate = Color( 0.807843, 0.054902, 0.054902, 1 )
+margin_left = 21.2762
+margin_top = 17.7299
+margin_right = 292.276
+margin_bottom = 57.7299
+
+[node name="WidthLabel" type="Label" parent="UILayer/MainMenu"]
+margin_left = 26.2762
+margin_top = 115.192
+margin_right = 190.276
+margin_bottom = 129.192
+text = "Width"
 
 [node name="WidthField" type="LineEdit" parent="UILayer/MainMenu"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -29.0
-margin_top = -12.0
-margin_right = 29.0
-margin_bottom = 12.0
-placeholder_text = "100"
+margin_left = -485.724
+margin_top = -245.27
+margin_right = -427.724
+margin_bottom = -221.27
+placeholder_text = "60"
+
+[node name="HeightLabel" type="Label" parent="UILayer/MainMenu"]
+margin_left = 26.2762
+margin_top = 181.73
+margin_right = 190.276
+margin_bottom = 195.73
+text = "Height"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="HeightField" type="LineEdit" parent="UILayer/MainMenu"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -29.0
-margin_top = 56.0
-margin_right = 29.0
-margin_bottom = 80.0
-placeholder_text = "100"
+margin_left = -485.724
+margin_top = -177.27
+margin_right = -427.724
+margin_bottom = -153.27
+placeholder_text = "60"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="WidthLabel" type="Label" parent="UILayer/MainMenu"]
-margin_left = 483.0
-margin_top = 348.462
-margin_right = 647.0
-margin_bottom = 362.462
-text = "Width"
+[node name="ReadyButton" type="Button" parent="UILayer/MainMenu"]
+margin_left = 26.2762
+margin_top = 254.73
+margin_right = 113.276
+margin_bottom = 274.73
+text = "Ready"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Height" type="Label" parent="UILayer/MainMenu"]
-margin_left = 483.0
-margin_top = 415.0
-margin_right = 647.0
-margin_bottom = 429.0
-text = "Height"
-
-[node name="Message" type="Label" parent="UILayer/MainMenu"]
-modulate = Color( 0.807843, 0.054902, 0.054902, 1 )
-margin_left = 426.0
-margin_top = 251.0
-margin_right = 697.0
-margin_bottom = 291.0
+[node name="DefaultButton" type="Button" parent="UILayer/MainMenu"]
+margin_left = 26.0
+margin_top = 282.0
+margin_right = 113.0
+margin_bottom = 302.0
+text = "Default"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="gen_finished" from="." to="UILayer/ControlPanel" method="_on_Main_gen_finished"]
+[connection signal="pressed" from="UILayer/ControlPanel/RegenButton" to="." method="_on_RegenButton_pressed"]
 [connection signal="set_dungeon_size" from="UILayer/MainMenu" to="." method="_on_MainMenu_set_dungeon_size"]
 [connection signal="pressed" from="UILayer/MainMenu/ReadyButton" to="UILayer/MainMenu" method="_on_ReadyButton_pressed"]
+[connection signal="pressed" from="UILayer/MainMenu/DefaultButton" to="UILayer/MainMenu" method="_on_DefaultButton_pressed"]
