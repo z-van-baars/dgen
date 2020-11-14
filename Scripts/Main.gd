@@ -2,6 +2,7 @@ extends Node
 
 signal gen_finished
 
+onready var tools = get_tree().root.get_node("Main/Tools")
 onready var rng = RandomNumberGenerator.new()
 onready var width
 onready var height
@@ -11,6 +12,8 @@ onready var large_room_max = 10
 onready var medium_room_max = 5
 onready var small_room_max = 3
 onready var max_retries = 20
+
+onready var hall_disengage_chance = 0
 
 onready var room_data = {
 	"Number": {"Large": 1,
@@ -58,89 +61,117 @@ func generate_rooms():
 				 "Small"]:
 					
 		for ii in range(room_data["Number"][each]):
-			print(each)
-			var tries = 0
-			var placed = false
 			var x_dim = rng.randi_range(
 				int(room_data["Max"][each] * 0.6),
 				room_data["Max"][each])
 			var y_dim = rng.randi_range(
 				int(room_data["Max"][each] * 0.6),
 				room_data["Max"][each])
-
-			while tries < max_retries and not placed:
-				print("try")
-				var rand_x = rng.randi_range(
-					1,
-					width - (x_dim + 1))
-				var rand_y = rng.randi_range(
-					1,
-					height - (y_dim + 1))
-				
-				if check_area(x_dim, y_dim, rand_x, rand_y):
-					print("Success")
-					placed = true
-					set_room(x_dim, y_dim, rand_x, rand_y)
-				else:
-					room_data["Failures"][each] += 1
-					print("Failure")
-				
-				tries += 1
-			
+			place_room(x_dim, y_dim, each)
 	render_tilemap()
 	emit_signal("gen_finished", room_data)
 
-func get_neighbors(start_tile):
-	var neighbors = []
-	neighbors.append(Vector2(start_tile.x - 1, start_tile.y - 1))
-	neighbors.append(Vector2(start_tile.x, start_tile.y - 1))
-	neighbors.append(Vector2(start_tile.x + 1, start_tile.y - 1))
-	neighbors.append(Vector2(start_tile.x - 1, start_tile.y))
-	neighbors.append(Vector2(start_tile.x + 1, start_tile.y))
-	neighbors.append(Vector2(start_tile.x - 1, start_tile.y + 1))
-	neighbors.append(Vector2(start_tile.x, start_tile.y + 1))
-	neighbors.append(Vector2(start_tile.x + 1, start_tile.y + 1))
+func place_room(x_dim, y_dim, room_type):
+	var tries = 0
+	var placed = false
+	while tries < max_retries and not placed:
+		var rand_x = rng.randi_range(
+			1,
+			width - (x_dim + 1))
+		var rand_y = rng.randi_range(
+			1,
+			height - (y_dim + 1))
+		
+		if not tools.check_area_includes(
+			tiles, x_dim, y_dim, rand_x, rand_y, [0, 9]):
+			# Tile Type 0 means area is already claimed by another room
+			placed = true
+			set_room(x_dim, y_dim, rand_x, rand_y)
+		else:
+			room_data["Failures"][room_type] += 1
+		
+		tries += 1
+
+func pathable(tile, parent_tile):
+
+	var constructions = [0, 2, -1]
+	if tiles[tile.y][tile.x] in constructions or tiles[tile.y][tile.x] == 9:
+		return false
+	var neighbors = tools.get_straight_neighbors(
+		width, height, tile)
+	var built_neighbors = 0
+	for each in neighbors:
+		if tiles[each.y][each.x] in constructions:
+			built_neighbors += 1
+			if built_neighbors > 1:
+				return false
+	var diagonal_neighbors = tools.get_diagonal_neighbors(
+		width, height, tile)
 	
-	var valid_neighbors = []
-	for each in neighbors:
-		if each.x >= 0 and each.x < width and each.y >= 0 and each.y < height:
-			valid_neighbors.append(each)
-	return valid_neighbors
+	var built_diagonals = []
+	for each in diagonal_neighbors:
+		if tiles[each.y][each.x] in constructions:
+			built_diagonals.append(each)
+			if built_diagonals.size() > 2:
+				return false
+			elif built_diagonals.size() > 0 and built_diagonals.size() <= 2:
+				for diag_neighbor in built_diagonals:
+					if diag_neighbor not in tools.get_straight_neighbors(
+						width, height, parent_tile):
+						return false
 
-func find_open_tiles():
-	var open_tiles = []
-	for y in range(0, height, 1):
-		for x in range(0, width, 1):
-			if tiles[y][x] == 1:
-				open_tiles.append(Vector2(x, y))
-	return open_tiles
-
-
-func pathable(tile):
-	var neighbors = get_neighbors(tile)
-	for each in neighbors:
-		if tiles[each.y][each.x] == 1:
-			return true
-	return false
+	return true
 
 func carve_halls():
 	var all_carved = false
-	while not all_carved:
-		var open_tiles = find_open_tiles()
-		
-		var random_start = open_tiles[rng.randi_range(0, open_tiles.size() - 1)]
-		var frontier = []
-		tiles[random_start.y][random_start.x] = 0
-		for each in get_neighbors(random_start):
+	new_hall()
+
+func new_hall():
+	var open_tiles = tools.find_open_tiles(tiles)
+	var hall_starts = []
+	for o_tile in open_tiles:
+		if pathable(o_tile):
+			hall_starts.append(o_tile)
+	if hall_starts.size() == 0:
+		return
+	var random_start = hall_starts[rng.randi_range(
+		0, hall_starts.size() - 1)]
+	var frontier = []
+	tiles[random_start.y][random_start.x] = 2
+	for each in tools.get_straight_neighbors(
+		width, height, random_start):
+		if pathable(each):
+			frontier.append(each)
+	var current_tile = random_start
+	while frontier.size() != 0:
+
+		if randi()%100 < hall_disengage_chance:
+			current_tile = frontier.pop_front()
+		else:
+
+			var current_neighbors = tools.get_straight_neighbors(width, height, current_tile)
+			var valid_current_neighbors = []
+			for each in current_neighbors:
+				if pathable(each):
+					valid_current_neighbors.append(each)
+			if valid_current_neighbors.size() > 0:
+				current_tile = valid_current_neighbors[rng.randi_range(0, valid_current_neighbors.size() - 1)]
+				frontier.erase(current_tile)
+			else:
+				current_tile = frontier.pop_front()
+
+		tiles[current_tile.y][current_tile.x] = 2
+		for each in tools.get_straight_neighbors(
+			width, height, current_tile):
 			if pathable(each):
 				frontier.append(each)
-		var current_tile = random_start
-		while not frontier.size() == 0:
-			current_tile = frontier.pop_front()
-			for each in get_neighbors(current_tile):
-				if pathable(each):
-					frontier.append(each)
-		render_tilemap()
+
+		var new_frontier = []
+		for each in frontier:
+			if pathable(each):
+				new_frontier.append(each)
+		frontier = new_frontier
+		
 
 
 func cull_halls():
@@ -178,15 +209,16 @@ func _on_MainMenu_set_dungeon_size(d_width, d_height):
 	carve_halls()
 	render_tilemap()
 
-func check_area(x_dim, y_dim, start_x, start_y):
-	for y in range(start_y, start_y + y_dim, 1):
-		for x in range(start_x, start_x + x_dim, 1):
-			if tiles[y][x] != 1:
-				return false
-	return true
 
 func _on_RegenButton_pressed():
 	clear()
 	generate_rooms()
 	carve_halls()
 	render_tilemap()
+
+
+
+func _input(event):
+	if event.is_action_pressed("space"):
+		carve_halls()
+		render_tilemap()

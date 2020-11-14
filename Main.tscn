@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Scripts/MainMenu.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://assets/tiles/air.png" type="Texture" id=9]
 [ext_resource path="res://Scripts/ControlPanel.gd" type="Script" id=10]
 [ext_resource path="res://assets/tiles/border.png" type="Texture" id=11]
+[ext_resource path="res://Scripts/Tools.gd" type="Script" id=12]
 
 [sub_resource type="TileSet" id=1]
 0/name = "air.png 0"
@@ -157,6 +158,9 @@
 [node name="Main" type="Node"]
 script = ExtResource( 2 )
 
+[node name="Tools" type="Node" parent="."]
+script = ExtResource( 12 )
+
 [node name="Background" type="ColorRect" parent="."]
 margin_right = 1440.0
 margin_bottom = 1024.0
@@ -172,6 +176,7 @@ position = Vector2( 26, 66 )
 tile_set = SubResource( 1 )
 cell_size = Vector2( 12, 12 )
 format = 1
+tile_data = PoolIntArray( -1966039, 2, 0, -1966029, 2, 0, -1966024, 2, 0, -1900503, 2, 0, -1900502, 4, 0, -1900501, 2, 0, -1900493, 2, 0, -1900492, 4, 0, -1900491, 5, 0, -1900488, 2, 0, -1900487, 4, 0, -1900486, 2, 0, -1834967, 2, 0, -1834966, 3, 0, -1834965, 4, 0, -1834957, 2, 0, -1834956, 3, 0, -1834955, 4, 0, -1834952, 2, 0, -1834951, 3, 0, -1834950, 2, 0, -1769431, 5, 0, -1769430, 4, 0, -1769429, 5, 0, -1769421, 2, 0, -1769420, 4, 0, -1769419, 5, 0, -1769416, 2, 0, -1769415, 4, 0, -1769414, 2, 0, -1638349, 2, 0, -1638344, 2, 0, -1572823, 5, 0, -1572822, 4, 0, -1572821, 2, 0, -1572818, 5, 0, -1572817, 4, 0, -1572816, 5, 0, -1572813, 2, 0, -1572812, 4, 0, -1572811, 2, 0, -1572808, 2, 0, -1572807, 4, 0, -1572806, 2, 0, -1507288, 2, 0, -1507287, 2, 0, -1507286, 3, 0, -1507285, 4, 0, -1507283, 2, 0, -1507282, 2, 0, -1507281, 3, 0, -1507280, 2, 0, -1507277, 2, 0, -1507276, 3, 0, -1507275, 4, 0, -1507272, 2, 0, -1507271, 3, 0, -1507270, 4, 0, -1441751, 5, 0, -1441750, 4, 0, -1441749, 5, 0, -1441746, 5, 0, -1441745, 4, 0, -1441744, 5, 0, -1441741, 2, 0, -1441740, 4, 0, -1441739, 5, 0, -1441736, 2, 0, -1441735, 4, 0, -1441734, 2, 0, -1310679, 2, 0, -1310678, 4, 0, -1310677, 5, 0, -1245144, 2, 0, -1245143, 2, 0, -1245142, 3, 0, -1245141, 4, 0, -1179607, 5, 0, -1179606, 4, 0, -1179605, 5, 0 )
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
